@@ -4,8 +4,12 @@ import UserService from "../services/user.service";
 class UserController {
         async loginUser(req: Request, res: Response){
             const {email, password} = req.body;
-            const foundUser = await new UserService().loginUser(email, password);
-            res.json({id: foundUser?.id});
+            try {
+            const token = await new UserService().loginUser(email, password);
+            res.json({token});
+            } catch(err) {
+                res.status(401).send("Login Failed");
+            }
         }
 
         async signUpUser(req: Request, res: Response){

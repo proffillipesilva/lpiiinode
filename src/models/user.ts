@@ -14,7 +14,7 @@ export class User {
     @Column()
     password: string
 
-    @Column()
+    @Column({nullable: true})
     imageUrl: string
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })

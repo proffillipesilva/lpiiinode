@@ -1,8 +1,10 @@
-import express, {Request, Response} from 'express';
+import express, {Request, RequestHandler, Response} from 'express';
 import cors from 'cors';
 import userRouter from '../routes/user.router';
 import morgan from 'morgan'
 import logger from './logger';
+import authRouter from '../routes/auth.router.';
+import { validator } from '../controllers/auth.validator';
 
 const app = express();
 app.use(cors());
@@ -20,6 +22,11 @@ app.get('/dados-fake', (req: Request, res: Response) => {
 })
 
 
+app.use('/users', validator);
 app.use('/users', userRouter);
+app.use('/auth', authRouter);
+app.get('/alunos', (req: Request,res: Response) => {
+    res.json([])
+})
 
 export default app;

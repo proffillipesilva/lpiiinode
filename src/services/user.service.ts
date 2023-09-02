@@ -6,11 +6,13 @@ import sha256 from 'crypto-js/sha256';
 import hmacSHA512 from 'crypto-js/hmac-sha512';
 import Base64 from 'crypto-js/enc-base64';
 import Jimp from "jimp";
+import * as jwt from 'jsonwebtoken'
 
 
 import { User } from "../models/user";
 import userRepository from "../models/user.repository";
 import logger from "../config/logger";
+import { SECRET } from "../constants";
 
 
 class UserService {
@@ -29,9 +31,17 @@ class UserService {
         return newUser;
     }
 
-    async loginUser(email: string, password: string){
-        const foundUser = await userRepository.findOneBy({ email, password});
-        return foundUser;
+    async loginUser(email: string, password: string): Promise<string>{
+        const hashDigest = sha256(password);
+        logger.debug("HashAntes: ", hashDigest)
+        const privateKey = "FIEC2023"
+        const passwordHashed = Base64.stringify(hmacSHA512(hashDigest, privateKey ))
+        const foundUser = await userRepository.findOneBy({ email, password: passwordHashed});
+        if(foundUser){
+        const jwtToken = jwt.sign({email: foundUser?.email, id: foundUser?.id}, SECRET, {expiresIn: 300})
+        return jwtToken;
+        }
+        throw new Error("User not found");
     }
 
     async signUpUser(name: string, email: string, password: string){

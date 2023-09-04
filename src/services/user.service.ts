@@ -66,7 +66,8 @@ class UserService {
 
     async updateUserImage(req: Request){
         const file = req.file;
-        const id = req.params.id;
+        const {id} = (req as any).authUser;
+
         const foundUser = await userRepository.findOneBy({id});
         if(file != null && foundUser != null){
             const image = await Jimp.read(file.path);

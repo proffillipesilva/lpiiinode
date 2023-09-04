@@ -23,6 +23,7 @@ app.get('/dados-fake', (req: Request, res: Response) => {
 
 
 app.use('/users', validator);
+app.use('/alunos', validator);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.get('/alunos', (req: Request,res: Response) => {

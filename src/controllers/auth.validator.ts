@@ -7,7 +7,10 @@ export async function validator(req: Request, res: Response, next: NextFunction)
     const bearer = bearerHeader?.split(' ');
     const bearerToken = bearer && bearer.length > 1 && bearer[1];
     try{
-    const token = await jwt.verify(bearerToken || '', SECRET);
+    const token = await jwt.verify(bearerToken || '', SECRET) as any;
+    
+        (req as any).authUser = {id: token.id};
+        console.log(req.headers.authUser);
         if(token) {
             next();
             return;
